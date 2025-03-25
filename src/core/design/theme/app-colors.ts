@@ -10,6 +10,7 @@ export const lightColorScheme: ColorScheme = {
   backgroundSecondary: "#E0E0E0",
   borderPrimary: "#E0E0E0",
   tabBarBackground: "#FFFFFF",
+  headerBackground: "#FFFFFF",
 };
 
 export const darkColorScheme: ColorScheme = {
@@ -22,4 +23,5 @@ export const darkColorScheme: ColorScheme = {
   backgroundSecondary: "#212121",
   borderPrimary: "#F5F5F5",
   tabBarBackground: "#000000",
+  headerBackground: "#000000",
 };

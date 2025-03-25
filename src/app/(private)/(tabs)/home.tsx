@@ -1,4 +1,5 @@
-import { AppPage, AppText } from "@/core/design";
+import { AppPage } from "@/core/design/components/atoms/app-page";
+import { AppText } from "@/core/design/components/atoms/app-text";
 
 export default function HomePage() {
   return (

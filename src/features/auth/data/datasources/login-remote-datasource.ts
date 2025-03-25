@@ -4,6 +4,7 @@ import LoginResponseModel from "../models/login-response-model";
 import { inject, injectable } from "inversify";
 
 export abstract class LoginRemoteDatasource {
+  abstract silentLogin(): Promise<LoginResponseModel>;
   abstract login(params: LoginParamsModel): Promise<LoginResponseModel>;
   abstract logout(): Promise<void>;
 }
@@ -14,11 +15,15 @@ export class LoginRemoteDatasourceImpl implements LoginRemoteDatasource {
     @inject(SupabaseService) private supabaseService: SupabaseService
   ) {}
 
-  async logout(): Promise<void> {
-    await this.supabaseService.logout();
+  async silentLogin(): Promise<LoginResponseModel> {
+    return await this.supabaseService.silentLogin();
   }
 
   async login(params: LoginParamsModel): Promise<LoginResponseModel> {
     return await this.supabaseService.login(params);
+  }
+
+  async logout(): Promise<void> {
+    await this.supabaseService.logout();
   }
 }

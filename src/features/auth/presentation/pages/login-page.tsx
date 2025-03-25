@@ -1,13 +1,10 @@
-import {
-  AppButton,
-  AppPage,
-  AppSpacing,
-  AppText,
-  AppTextInput,
-} from "@/core/design";
 import { useSession } from "../hooks/use-session";
 import { View } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { AppPage } from "@/core/design/components/atoms/app-page";
+import { AppTextInput } from "@/core/design/components/molecules/app-text-input";
+import { AppButton } from "@/core/design/components/molecules/app-button";
+import { AppSpacing } from "@/core/design/theme/app-spacing";
 
 export default function LoginPage() {
   const { login } = useSession();
@@ -23,6 +20,7 @@ export default function LoginPage() {
     <AppPage center>
       <View style={{ gap: AppSpacing.large, width: "75%" }}>
         <AppTextInput
+          leadingIcon="mail-outline"
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
@@ -31,6 +29,7 @@ export default function LoginPage() {
           autoCorrect={false}
         />
         <AppTextInput
+          leadingIcon="lock-closed-outline"
           placeholder="Mot de passe"
           value={password}
           onChangeText={setPassword}

@@ -8,4 +8,5 @@ export interface ColorScheme {
   backgroundSecondary: string;
   borderPrimary: string;
   tabBarBackground: string;
+  headerBackground: string;
 }

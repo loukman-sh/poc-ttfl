@@ -1,47 +1,71 @@
-import { AppText, useColorSchemeStore } from "@/core/design";
 import { Tabs } from "expo-router";
-import Foundation from "@expo/vector-icons/Foundation";
-import Octicons from "@expo/vector-icons/Octicons";
 import Ionicons from "@expo/vector-icons/Ionicons";
-import { AppTextSize } from "@/core/design/theme/app-sizes";
 import { StyleSheet } from "react-native";
+import { useAppStyles } from "@/core/design/hooks/use-app-styles";
+import { AppFontSize } from "@/core/design/theme/app-fonts";
+import { useAppColorScheme } from "@/core/design/hooks/use-app-color-scheme";
+import { AppText } from "@/core/design/components/atoms/app-text";
+import { ColorScheme } from "@/core/design/@types/color-scheme";
+import { AppButton } from "@/core/design/components/molecules/app-button";
+import { AppSpacing } from "@/core/design/theme/app-spacing";
 
 export default function TabsLayout() {
-  const { colorScheme } = useColorSchemeStore();
+  const { colorScheme, toggleColorScheme, currentColorScheme } =
+    useAppColorScheme();
+  const styles = useAppStyles(createStyles);
+
+  const getItemLabel = (routeName: string) => {
+    switch (routeName) {
+      case "home":
+        return "Accueil";
+      case "decks":
+        return "Decks";
+      case "standings":
+        return "Classement";
+      case "settings":
+        return "Paramètres";
+      case "ui":
+        return "UI";
+      default:
+        return "";
+    }
+  };
+
+  const getItemIcon = ({
+    routeName,
+    focused,
+  }: {
+    routeName: string;
+    focused: boolean;
+  }): keyof typeof Ionicons.glyphMap => {
+    switch (routeName) {
+      case "home":
+        return focused ? "home" : "home-outline";
+      case "decks":
+        return focused ? "albums" : "albums-outline";
+      case "standings":
+        return focused ? "podium" : "podium-outline";
+      case "settings":
+        return focused ? "settings" : "settings-outline";
+      case "ui":
+        return focused ? "color-palette" : "color-palette-outline";
+      default:
+        return "close";
+    }
+  };
   return (
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarStyle: {
-          backgroundColor: colorScheme.tabBarBackground,
-          borderTopWidth: 0,
-        },
-        tabBarLabel: ({ focused }) => {
-          const labelColor = focused
-            ? colorScheme.textPrimary
-            : colorScheme.textSecondary;
-
-          let label = "";
-
-          switch (route.name) {
-            case "home":
-              label = "Accueil";
-              break;
-            case "decks":
-              label = "Decks";
-              break;
-            case "standings":
-              label = "Classement";
-              break;
-            case "settings":
-              label = "Paramètres";
-              break;
-          }
+        headerStyle: styles.headerStyle,
+        headerTintColor: colorScheme.textPrimary,
+        tabBarStyle: styles.tabBarStyle,
+        tabBarActiveTintColor: colorScheme.textPrimary,
+        tabBarInactiveTintColor: colorScheme.textSecondary,
+        tabBarLabel: ({ color }) => {
           return (
-            <AppText
-              style={{ color: labelColor, fontSize: AppTextSize.extraSmall }}
-            >
-              {label}
+            <AppText style={[styles.label, { color }]}>
+              {getItemLabel(route.name)}
             </AppText>
           );
         },
@@ -49,28 +73,9 @@ export default function TabsLayout() {
           const iconColor = focused
             ? colorScheme.textPrimary
             : colorScheme.textSecondary;
-          switch (route.name) {
-            case "home":
-              return <Foundation name="home" size={size} color={iconColor} />;
-            case "decks":
-              return <Octicons name="stack" size={size} color={iconColor} />;
-            case "standings":
-              return (
-                <Ionicons
-                  name={focused ? "podium" : "podium-outline"}
-                  size={size}
-                  color={iconColor}
-                />
-              );
-            case "settings":
-              return (
-                <Ionicons
-                  name={focused ? "settings" : "settings-outline"}
-                  size={size}
-                  color={iconColor}
-                />
-              );
-          }
+
+          const iconName = getItemIcon({ routeName: route.name, focused });
+          return <Ionicons name={iconName} size={size} color={iconColor} />;
         },
       })}
     >
@@ -78,6 +83,44 @@ export default function TabsLayout() {
       <Tabs.Screen name="decks" />
       <Tabs.Screen name="standings" />
       <Tabs.Screen name="settings" />
+      <Tabs.Screen
+        name="ui"
+        options={{
+          headerShown: true,
+          title: "Composants",
+          headerRight: () => (
+            <AppButton variant="transparent" onPress={toggleColorScheme}>
+              <Ionicons
+                name={
+                  currentColorScheme === "light"
+                    ? "sunny-outline"
+                    : "moon-outline"
+                }
+                size={20}
+                style={styles.icon}
+              />
+            </AppButton>
+          ),
+        }}
+      />
     </Tabs>
   );
 }
+
+const createStyles = (colorScheme: ColorScheme) =>
+  StyleSheet.create({
+    tabBarStyle: {
+      backgroundColor: colorScheme.tabBarBackground,
+      borderTopWidth: 0,
+    },
+    headerStyle: {
+      backgroundColor: colorScheme.headerBackground,
+    },
+    label: {
+      fontSize: AppFontSize.extraSmall,
+    },
+    icon: {
+      color: colorScheme.textPrimary,
+      marginRight: AppSpacing.medium,
+    },
+  });

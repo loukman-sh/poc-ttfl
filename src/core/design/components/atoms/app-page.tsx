@@ -1,6 +1,8 @@
 import { PropsWithChildren } from "react";
-import { View, ViewProps } from "react-native";
-import { useColorSchemeStore } from "../../hooks/use-color-scheme";
+import { StyleSheet, ViewProps } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { ColorScheme } from "@/core/design/@types/color-scheme";
+import { useAppStyles } from "@/core/design/hooks/use-app-styles";
 
 type Props = PropsWithChildren<
   ViewProps & {
@@ -9,18 +11,26 @@ type Props = PropsWithChildren<
 >;
 
 export const AppPage = ({ children, center, style, ...props }: Props) => {
-  const { colorScheme } = useColorSchemeStore();
+  const styles = useAppStyles(createStyles);
 
   return (
-    <View
-      style={[
-        center && { alignItems: "center", justifyContent: "center" },
-        { backgroundColor: colorScheme.backgroundPrimary, flex: 1 },
-        style,
-      ]}
+    <SafeAreaView
+      style={[center && styles.centered, styles.container, style]}
       {...props}
     >
       {children}
-    </View>
+    </SafeAreaView>
   );
 };
+
+const createStyles = (colorScheme: ColorScheme) =>
+  StyleSheet.create({
+    centered: {
+      alignItems: "center",
+      justifyContent: "center",
+    },
+    container: {
+      backgroundColor: colorScheme.backgroundPrimary,
+      flex: 1,
+    },
+  });

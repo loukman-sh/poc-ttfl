@@ -3,6 +3,12 @@ import LoginParamsEntity from "@/features/auth/domain/entities/login-params-enti
 import { LoginRemoteDatasource } from "@/features/auth/data/datasources/login-remote-datasource";
 import LoginResponseEntity from "@/features/auth/domain/entities/login-response-entity";
 import { inject, injectable } from "inversify";
+import {
+  loginParamsModelFromEntity,
+  loginResponseModelToEntity,
+} from "../adapters/login-adapters";
+import LoginParamsModel from "../models/login-params-model";
+import LoginResponseModel from "../models/login-response-model";
 
 @injectable()
 export class LoginRepositoryImpl implements LoginRepository {
@@ -11,13 +17,20 @@ export class LoginRepositoryImpl implements LoginRepository {
     private loginRemoteDataSource: LoginRemoteDatasource
   ) {}
 
-  async login(params: LoginParamsEntity): Promise<LoginResponseEntity> {
-    const response = await this.loginRemoteDataSource.login(params);
+  async silentLogin(): Promise<LoginResponseEntity> {
+    const response: LoginResponseModel =
+      await this.loginRemoteDataSource.silentLogin();
 
-    return {
-      id: response.id,
-      email: response.email,
-    };
+    return loginResponseModelToEntity(response);
+  }
+
+  async login(params: LoginParamsEntity): Promise<LoginResponseEntity> {
+    const loginParams: LoginParamsModel = loginParamsModelFromEntity(params);
+    const response: LoginResponseModel = await this.loginRemoteDataSource.login(
+      loginParams
+    );
+
+    return loginResponseModelToEntity(response);
   }
 
   async logout(): Promise<void> {
