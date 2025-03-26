@@ -4,11 +4,11 @@
     "appVersionSource": "remote"
   },
   "build": {
-    "preview": {
+    "staging": {
       "distribution": "internal"
     },
-    "production": {
-      "autoIncrement": true
+    "store": {
+      "distribution": "store"
     }
   },
   "submit": {

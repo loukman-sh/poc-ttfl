@@ -9,7 +9,7 @@ import { LoginRepository } from "../domain/repositories/login-repository";
 import { LogoutUseCase } from "../domain/usecases/logout-usecase";
 import { SilentLoginUseCase } from "../domain/usecases/silent-login-usecase";
 
-export function injectAuth(container: Container) {
+export function injectAuthFeature(container: Container) {
   container.bind<LoginRepository>(LoginRepository).to(LoginRepositoryImpl);
   container
     .bind<LoginRemoteDatasource>(LoginRemoteDatasource)

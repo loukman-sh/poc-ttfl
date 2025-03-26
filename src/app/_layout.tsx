@@ -7,8 +7,11 @@ import { useAppFonts } from "@/core/design/hooks/use-app-fonts";
 import { StatusBar } from "expo-status-bar";
 import * as SplashScreen from "expo-splash-screen";
 import { useSession } from "@/features/auth/presentation/hooks/use-session";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 SplashScreen.preventAutoHideAsync();
+
+const queryClient = new QueryClient();
 
 export default function RootLayout() {
   const deviceColorScheme = useColorScheme();
@@ -38,9 +41,9 @@ export default function RootLayout() {
   }, [fontsLoaded, sessionInitialized]);
 
   return (
-    <>
+    <QueryClientProvider client={queryClient}>
       <StatusBar style={statusBarStyle} />
       <Slot />
-    </>
+    </QueryClientProvider>
   );
 }

@@ -1,15 +1,16 @@
 import { Container } from "inversify";
-import { injectAuth } from "@/features/auth/common/auth-injection";
-import SupabaseServiceImpl from "../services/supabase-service";
-import { SupabaseService } from "../services/supabase-service";
+import { injectAuthFeature } from "@/features/auth/common/auth-injection";
+import SupabaseServiceImpl from "@/core/services/supabase-service";
+import { SupabaseService } from "@/core/services/supabase-service";
 import {
   SecureStorageService,
   SecureStorageServiceImpl,
-} from "../services/secure-storage-service";
+} from "@/core/services/secure-storage-service";
 import {
   LocalStorageService,
   LocalStorageServiceImpl,
-} from "../services/local-storage-service";
+} from "@/core/services/local-storage-service";
+import { injectGamesFeature } from "@/features/games/common/games-injection";
 
 export const container = new Container({ defaultScope: "Singleton" });
 
@@ -19,7 +20,8 @@ container.bind(LocalStorageService).to(LocalStorageServiceImpl);
 container.bind(SupabaseService).to(SupabaseServiceImpl);
 
 // Features dependencies
-injectAuth(container);
+injectAuthFeature(container);
+injectGamesFeature(container);
 
 // Services initialization
 container.get(SupabaseService).init();
