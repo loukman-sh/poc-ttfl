@@ -1,9 +1,24 @@
 // Define the base Result class
 export abstract class Result<T> {
+  public readonly data?: T;
+  public readonly message?: string;
+
+  constructor(data?: T, message?: string) {
+    this.data = data;
+    this.message = message;
+  }
   abstract handle(callbacks: {
-    success: (data: T) => void;
+    success: (data?: T) => void;
     failure: (error: Failure) => void;
   }): void;
+
+  get isSuccess(): boolean {
+    return this instanceof Success;
+  }
+
+  get isFailure(): boolean {
+    return this instanceof Failure;
+  }
 
   static success<T>(data?: T): Success<T | undefined> {
     return new Success(data);
@@ -16,8 +31,8 @@ export abstract class Result<T> {
 
 // Define the Failure class extending Result
 class Failure extends Result<never> {
-  constructor(public readonly message: string) {
-    super();
+  constructor(message: string) {
+    super(undefined, message);
   }
 
   handle(callbacks: {
@@ -30,14 +45,14 @@ class Failure extends Result<never> {
 
 // Define the Success class extending Result
 class Success<T> extends Result<T> {
-  constructor(public readonly data: T) {
-    super();
+  constructor(data: T) {
+    super(data);
   }
 
   handle(callbacks: {
     success: (data: T) => void;
     failure: (error: Failure) => void;
   }): void {
-    callbacks.success(this.data);
+    callbacks.success(this.data as T);
   }
 }

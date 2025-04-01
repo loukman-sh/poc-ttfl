@@ -8,6 +8,14 @@ export const useSchedule = () => {
 
   return useQuery({
     queryKey: [AppQueryKeys.schedule],
-    queryFn: async () => await getScheduleUsecase.execute(),
+    queryFn: async () => {
+      const result = await getScheduleUsecase.execute();
+
+      if (result.isSuccess) {
+        return result.data;
+      }
+
+      throw new Error(result.message);
+    },
   });
 };

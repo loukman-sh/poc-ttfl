@@ -1,3 +1,3 @@
-import SignupPage from "@/features/auth/presentation/pages/signup-page";
+import SignupPage from "@/features/signup/presentation/pages/signup-page";
 
 export default SignupPage;

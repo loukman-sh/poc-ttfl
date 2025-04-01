@@ -32,8 +32,9 @@ const createStyles = (colorScheme: ColorScheme) =>
       fontFamily: AppFontFamily.ClarityCityBold,
     },
     subtitle: {
-      fontSize: AppFontSize.large,
-      fontFamily: AppFontFamily.ClarityCitySemiBold,
+      fontSize: AppFontSize.medium,
+      fontFamily: AppFontFamily.ClarityCity,
+      color: colorScheme.textSecondary,
     },
     body: {
       fontSize: AppFontSize.regular,

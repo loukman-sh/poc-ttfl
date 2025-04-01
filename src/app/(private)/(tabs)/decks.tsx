@@ -1,10 +1,3 @@
-import { AppPage } from "@/core/design/components/atoms/app-page";
-import { AppText } from "@/core/design/components/atoms/app-text";
+import DecksPage from "@/features/decks/presentation/pages/decks-page";
 
-export default function DecksPage() {
-  return (
-    <AppPage center>
-      <AppText>Decks</AppText>
-    </AppPage>
-  );
-}
+export default DecksPage;

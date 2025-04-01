@@ -11,6 +11,8 @@ import {
   LocalStorageServiceImpl,
 } from "@/core/services/local-storage-service";
 import { injectGamesFeature } from "@/features/games/common/games-injection";
+import { injectSignupFeature } from "@/features/signup/common/signup-injection";
+import { injectDecksFeature } from "@/features/decks/common/decks-injection";
 
 export const container = new Container({ defaultScope: "Singleton" });
 
@@ -22,8 +24,7 @@ container.bind(SupabaseService).to(SupabaseServiceImpl);
 // Features dependencies
 injectAuthFeature(container);
 injectGamesFeature(container);
-
-// Services initialization
-container.get(SupabaseService).init();
+injectSignupFeature(container);
+injectDecksFeature(container);
 
 export default container;

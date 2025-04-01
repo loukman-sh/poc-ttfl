@@ -21,7 +21,5 @@ export const AppIcon = ({ name, color, size = 24, onPress }: Props) => {
 
 const createStyles = (colorScheme: ColorScheme) =>
   StyleSheet.create({
-    icon: {
-      color: colorScheme.textPrimary,
-    },
+    icon: {},
   });

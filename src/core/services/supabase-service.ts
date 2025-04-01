@@ -4,9 +4,11 @@ import LoginParamsModel from "@/features/auth/data/models/login-params-model";
 import LoginResponseModel from "@/features/auth/data/models/login-response-model";
 import { UnauthorizedError, UnexpectedError } from "../helpers/errors";
 import { SecureStorageService } from "./secure-storage-service";
+import { SignupParamsModel } from "@/features/signup/data/models/signup-params-model";
 
 export abstract class SupabaseService {
-  abstract init(): void;
+  abstract client: SupabaseClient;
+
   abstract silentLogin(): Promise<LoginResponseModel>;
   abstract login(params: LoginParamsModel): Promise<LoginResponseModel>;
   abstract logout(): Promise<void>;
@@ -14,17 +16,19 @@ export abstract class SupabaseService {
 
 @injectable()
 export default class SupabaseServiceImpl extends SupabaseService {
-  private client?: SupabaseClient;
+  client: SupabaseClient;
+  private userId?: string;
 
   constructor(
     @inject(SecureStorageService)
     private secureStorageService: SecureStorageService
   ) {
     super();
+    this.client = this.createClient();
   }
 
-  init() {
-    this.client = createClient(
+  createClient() {
+    return createClient(
       process.env.EXPO_PUBLIC_SUPABASE_URL!,
       process.env.EXPO_PUBLIC_SUPABASE_ANON_KEY!,
       {
@@ -64,6 +68,20 @@ export default class SupabaseServiceImpl extends SupabaseService {
     await this.client?.auth.signOut();
   }
 
+  async signUp(params: SignupParamsModel): Promise<void> {
+    const response = await this.client?.auth.signUp({
+      email: params.email,
+      password: params.password,
+      options: {
+        data: { username: params.username },
+      },
+    });
+
+    if (response?.error) {
+      throw new UnexpectedError(response.error.message);
+    }
+  }
+
   private getLoginResponseFromSession(
     session?: Session | null
   ): LoginResponseModel {
@@ -75,6 +93,8 @@ export default class SupabaseServiceImpl extends SupabaseService {
       if (!session.user.id) {
         throw new UnexpectedError("User id not found");
       }
+
+      this.userId = session.user.id;
 
       return {
         id: session.user.id,

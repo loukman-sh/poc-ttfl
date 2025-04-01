@@ -6,9 +6,10 @@ import {
   GamesDataSourceImpl,
 } from "@/features/games/data/datasource/games-datasource";
 import { GetScheduleUsecase } from "@/features/games/domain/usecases/get-schedule-usecase";
-
+import { GetPlayersUsecase } from "@/features/games/domain/usecases/get-players-usecase";
 export function injectGamesFeature(container: Container) {
   container.bind<GamesRepository>(GamesRepository).to(GamesRepositoryImpl);
   container.bind<GamesDataSource>(GamesDataSource).to(GamesDataSourceImpl);
   container.bind<GetScheduleUsecase>(GetScheduleUsecase).toSelf();
+  container.bind<GetPlayersUsecase>(GetPlayersUsecase).toSelf();
 }

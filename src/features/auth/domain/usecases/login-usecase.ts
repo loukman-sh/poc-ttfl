@@ -6,15 +6,12 @@ import LoginResponseEntity from "../entities/login-response-entity";
 import { Result } from "@/core/helpers/result";
 
 @injectable()
-export class LoginUseCase extends Usecase<
-  LoginParamsEntity,
-  LoginResponseEntity
-> {
+export class LoginUseCase
+  implements Usecase<LoginParamsEntity, LoginResponseEntity>
+{
   constructor(
     @inject(LoginRepository) private loginRepository: LoginRepository
-  ) {
-    super();
-  }
+  ) {}
 
   async execute(
     params: LoginParamsEntity

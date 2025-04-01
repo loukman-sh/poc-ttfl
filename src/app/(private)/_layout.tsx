@@ -16,6 +16,14 @@ export default function PrivateLayout() {
       screenOptions={{
         headerShown: false,
       }}
-    />
+    >
+      <Stack.Screen name="(tabs)" />
+      <Stack.Screen
+        name="pick"
+        options={{
+          presentation: "modal",
+        }}
+      />
+    </Stack>
   );
 }

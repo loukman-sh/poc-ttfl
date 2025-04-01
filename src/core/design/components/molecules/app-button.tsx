@@ -4,6 +4,7 @@ import {
   TextStyle,
   TouchableOpacity,
   TouchableOpacityProps,
+  ActivityIndicator,
 } from "react-native";
 import { AppText } from "@/core/design/components/atoms/app-text";
 import { AppSpacing } from "@/core/design/theme/app-spacing";
@@ -15,12 +16,14 @@ import { AppFontFamily } from "../../theme/app-fonts";
 type Props = PropsWithChildren<TouchableOpacityProps> & {
   variant?: "filled" | "outline" | "link" | "transparent";
   textStyle?: TextStyle;
+  isLoading?: boolean;
 };
 
 export const AppButton = ({
   children,
   textStyle,
   variant = "filled",
+  isLoading = false,
   ...props
 }: Props) => {
   const styles = useAppStyles(createStyles);
@@ -36,12 +39,16 @@ export const AppButton = ({
         return styles.filledText;
     }
   };
+
   return (
     <TouchableOpacity
       style={[styles.container, styles[variant], props.style]}
       {...props}
+      disabled={isLoading}
     >
-      {typeof children === "string" ? (
+      {isLoading ? (
+        <ActivityIndicator color={styles.commonText.color} />
+      ) : typeof children === "string" ? (
         <AppText style={[styles.commonText, getTextStyle(), textStyle]}>
           {children}
         </AppText>
@@ -57,11 +64,14 @@ function createStyles(colorScheme: ColorScheme) {
     container: {
       backgroundColor: colorScheme.buttonPrimary,
       borderRadius: AppRadius.rounded,
+      paddingHorizontal: AppSpacing.medium,
+      paddingVertical: AppSpacing.regular,
+      justifyContent: "center",
+      alignItems: "center",
     },
     commonText: {
       fontFamily: AppFontFamily.ClarityCityMedium,
-      paddingHorizontal: AppSpacing.medium,
-      paddingVertical: AppSpacing.regular,
+      color: colorScheme.buttonTextPrimary,
     },
     text: {
       color: colorScheme.textPrimary,

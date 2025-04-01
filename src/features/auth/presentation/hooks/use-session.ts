@@ -19,66 +19,71 @@ export type SessionState = {
   status: SessionStatus;
   user: UserEntity | null;
   login: (params: LoginParamsEntity) => Promise<void>;
-  logout: () => void;
+  logout: (callback?: () => void) => Promise<void>;
   silentLogin: () => Promise<void>;
   initialized: boolean;
 };
 
-export const useSession = create<SessionState>((set) => ({
-  status: SessionStatus.UNAUTHENTICATED,
-  user: null,
-  initialized: false,
-  login: async (params: LoginParamsEntity) => {
-    set({ status: SessionStatus.LOADING });
+export const useSession = create<SessionState>((set) => {
+  return {
+    status: SessionStatus.UNAUTHENTICATED,
+    user: null,
+    initialized: false,
+    login: async (params: LoginParamsEntity) => {
+      set({ status: SessionStatus.LOADING });
 
-    const result = await container.get(LoginUseCase).execute(params);
+      const result = await container.get(LoginUseCase).execute(params);
 
-    result.handle({
-      success: (data) => {
-        set({
-          status: SessionStatus.AUTHENTICATED,
-          user: data,
-        });
-      },
-      failure: (error) => {
-        Alert.alert("Erreur", error.message);
-      },
-    });
-  },
-  logout: async () => {
-    set({ status: SessionStatus.LOADING });
+      result.handle({
+        success: (data) => {
+          if (data) {
+            set({
+              status: SessionStatus.AUTHENTICATED,
+              user: data,
+            });
+          }
+        },
+        failure: (error) => {
+          Alert.alert("Erreur", error.message);
+        },
+      });
+    },
+    logout: async (callback?: () => void) => {
+      set({ status: SessionStatus.LOADING });
 
-    const result = await container.get(LogoutUseCase).execute();
+      const result = await container.get(LogoutUseCase).execute();
 
-    result.handle({
-      success: () => {
-        set({ status: SessionStatus.UNAUTHENTICATED, user: null });
-      },
-      failure: (error) => {
-        Alert.alert("Erreur", error.message);
-      },
-    });
-  },
-  silentLogin: async () => {
-    set({ status: SessionStatus.LOADING });
+      result.handle({
+        success: () => {
+          set({ status: SessionStatus.UNAUTHENTICATED, user: null });
+          callback?.();
+        },
+        failure: (error) => {
+          Alert.alert("Erreur", error.message);
+        },
+      });
+    },
+    silentLogin: async () => {
+      set({ status: SessionStatus.LOADING });
 
-    const result = await container.get(SilentLoginUseCase).execute();
+      const result = await container.get(SilentLoginUseCase).execute();
 
-    result.handle({
-      success: (data) => {
-        set({
-          status: SessionStatus.AUTHENTICATED,
-          user: data,
-          initialized: true,
-        });
-      },
-      failure: () => {
-        set({
-          status: SessionStatus.UNAUTHENTICATED,
-          user: null,
-          initialized: true,
-        });
-      },
-    });
-  },
-}));
+      result.handle({
+        success: (data) => {
+          set({
+            status: SessionStatus.AUTHENTICATED,
+            user: data,
+            initialized: true,
+          });
+        },
+        failure: () => {
+          set({
+            status: SessionStatus.UNAUTHENTICATED,
+            user: null,
+            initialized: true,
+          });
+        },
+      });
+    },
+  };
+});

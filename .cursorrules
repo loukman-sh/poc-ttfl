@@ -1,0 +1,54 @@
+# POC TTFL
+
+## Présentation du projet
+
+Il s'agit d'une application mobile de Fantasy League NBA. 
+
+## Stack technique
+
+- React Native
+- Expo
+- TypeScript
+- State management : zustand + tanstack-query
+- Routing : expo-router
+- Styling : StyleSheet
+- Database : Supabase
+- Authentication : Supabase Auth
+
+## Architecture
+
+Le projet est construit selon les principes de Clean Architecture.
+
+### Structure 
+
+- `src/core` : Contient les services communs à l'application.
+- `src/features` : Contient les features de l'application.
+    - Chaque featu
+    re est construite de la façon suivante :
+        - `data` : Contient les datasources, les implémentations des repositories et les models.
+        - `domain` : Contient les entités, les usecases et les interfaces des repositories.
+        - `presentation` : Contient les pages, les composants et les hooks.
+
+Le projet utilise l'injection de dépendances via Inversify.
+
+### Règles de développement
+
+- Privilégier les imports nommés plutôt que les imports par défaut.
+- La couche `domain` ne doit dépendre d'aucune autre couche.
+- La couche `data` ne peut dépendre que de la couche `domain`.
+- La couche `presentation` ne doit dépendre que de la couche `domain`.
+- Les datasources sont des services externes (API, base de données, etc.) et ne doivent pas être testés.
+- Les usecases sont des services internes à la couche `domain` et doivent être testés.
+- Les pages sont des composants React Native et doivent être testés.
+
+### Convention de nommage 
+
+- Les fichiers sont nommés en kebab-case.
+- Les variables sont nommées en camelCase.
+- Les fonctions sont nommées en camelCase.
+- Les constantes sont nommées en UPPERCASE.
+- Les types sont nommés en PascalCase.
+- Les interfaces sont nommées en PascalCase.
+- Les composants sont nommés en PascalCase.
+- Les hooks sont nommés en camelCase et commencent par "use".
+- Les classes sont nommées en PascalCase.

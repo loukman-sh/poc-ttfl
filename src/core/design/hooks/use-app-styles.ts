@@ -1,6 +1,12 @@
 import { useMemo } from "react";
 import { ColorScheme } from "../@types/color-scheme";
 import { useAppColorScheme } from "./use-app-color-scheme";
+import { EdgeInsets, useSafeAreaInsets } from "react-native-safe-area-context";
+
+export type StyleCreator<T> = (
+  colorScheme: ColorScheme,
+  insets: EdgeInsets
+) => T;
 
 /**
  * Use styles hook
@@ -8,7 +14,11 @@ import { useAppColorScheme } from "./use-app-color-scheme";
  * @param styleCreator - A function that creates styles based on the color scheme
  * @returns The styles object
  */
-export function useAppStyles<T>(styleCreator: (colorScheme: ColorScheme) => T) {
+export function useAppStyles<T>(styleCreator: StyleCreator<T>) {
   const { colorScheme } = useAppColorScheme();
-  return useMemo(() => styleCreator(colorScheme), [colorScheme, styleCreator]);
+  const insets = useSafeAreaInsets();
+  return useMemo(
+    () => styleCreator(colorScheme, insets),
+    [colorScheme, insets, styleCreator]
+  );
 }

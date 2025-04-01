@@ -8,7 +8,7 @@ export default function PublicLayout() {
   const { status } = useSession();
 
   if (status === SessionStatus.AUTHENTICATED) {
-    return <Redirect href="/home" />;
+    return <Redirect href="/(private)/(tabs)/home" />;
   }
 
   return (
